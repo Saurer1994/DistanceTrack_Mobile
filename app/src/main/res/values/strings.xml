@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">DistanceTracker</string>
+    <string name="Title">Codelab Sauri</string>
+    <string name="Long">Longtitude:</string>
+    <string name="Lat">Latitude:</string>
+    <string name="Loc">Location:</string>
+    <string name="Spd">Speed:</string>
+    <string name="He">Height:</string>
+    <string name="Maxspd">MAX Speed:</string>
+    <string name="Dis">Distance:</string>
+    <string name="AvgSpeed">AVG Speed:</string>
+    <string name="btn">Start</string>
+    <string name="btnRoute">Show Route</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="btnStop">Stop</string>
 </resources>
