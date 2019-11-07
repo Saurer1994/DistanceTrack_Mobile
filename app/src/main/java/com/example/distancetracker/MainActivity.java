@@ -1,12 +1,14 @@
 package com.example.distancetracker;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -17,10 +19,15 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.zxing.Result;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -31,7 +38,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+import me.dm7.barcodescanner.zxing.ZXingScannerView;
+import static android.Manifest.permission.CAMERA;
+
+public class MainActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
+
+    //For QR Scanner new
+    private static final int REQUEST_CAMERA = 1;
+    private ZXingScannerView mScannerView;
 
     private LocationManager locationMangaer = null;
     private LocationListener locationListener = null;
@@ -75,22 +89,25 @@ public class MainActivity extends AppCompatActivity {
         BtnStart = (Button) findViewById(R.id.btnStart);
         BtnStop = (Button) findViewById(R.id.btnStop);
 
+        //--------- QR Scanner
+        mScannerView = new ZXingScannerView(MainActivity.this);
+        setContentView(mScannerView);
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        if (currentapiVersion >= android.os.Build.VERSION_CODES.M) {
+            if (checkPermission()) {
+                Toast.makeText(getApplicationContext(), "Permission already granted", Toast.LENGTH_LONG).show();
+
+            } else {
+                requestPermission();
+            }
+        }
+        //--------- QR Scanner
+
         BtnStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
 
-                    Intent intent = new Intent("com.google.zxing.client.android.SCAN");
-                    intent.putExtra("SCAN_MODE", "QR_CODE_MODE"); // "PRODUCT_MODE for bar codes
 
-                    startActivityForResult(intent, 0);
-
-                } catch (Exception e) {
-
-                    Uri marketUri = Uri.parse("market://details?id=com.google.zxing.client.android");
-                    Intent marketIntent = new Intent(Intent.ACTION_VIEW, marketUri);
-                    startActivity(marketIntent);
-                }
             }
         });
 
@@ -128,21 +145,106 @@ public class MainActivity extends AppCompatActivity {
         locationMangaer = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     }
 
-    //For QR Scanner
+    //--------- QR Scanner
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 0) {
+    public void onResume() {
+        super.onResume();
 
-            if (resultCode == RESULT_OK) {
-                String contents = data.getStringExtra("SCAN_RESULT");
-                v_gps_status.setText(contents);
-            }
-            if(resultCode == RESULT_CANCELED){
-                //handle cancel
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        if (currentapiVersion >= android.os.Build.VERSION_CODES.M) {
+            if (checkPermission()) {
+                if(mScannerView == null) {
+                    mScannerView = new ZXingScannerView(this);
+                    setContentView(mScannerView);
+                }
+                mScannerView.setResultHandler(this);
+                mScannerView.startCamera();
+            } else {
+                requestPermission();
             }
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mScannerView.stopCamera();
+    }
+
+    private boolean checkPermission() {
+        return ( ContextCompat.checkSelfPermission(getApplicationContext(), CAMERA ) == PackageManager.PERMISSION_GRANTED);
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{CAMERA}, REQUEST_CAMERA);
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CAMERA:
+                if (grantResults.length > 0) {
+
+                    boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    if (cameraAccepted){
+                        Toast.makeText(getApplicationContext(), "Permission Granted, Now you can access camera", Toast.LENGTH_LONG).show();
+                    }else {
+                        Toast.makeText(getApplicationContext(), "Permission Denied, You cannot access and camera", Toast.LENGTH_LONG).show();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (shouldShowRequestPermissionRationale(CAMERA)) {
+                                showMessageOKCancel("You need to allow access to both the permissions",
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                                    requestPermissions(new String[]{CAMERA}, REQUEST_CAMERA);
+                                                }
+                                            }
+                                        });
+                                return;
+                            }
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
+    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(MainActivity.this)
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
+    }
+
+    @Override
+    public void handleResult(Result rawResult) {
+        final String result = rawResult.getText();
+        Log.d("QRCodeScanner", rawResult.getText());
+        Log.d("QRCodeScanner", rawResult.getBarcodeFormat().toString());
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Scan Result");
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mScannerView.resumeCameraPreview(MainActivity.this);
+            }
+        });
+        builder.setNeutralButton("Visit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(result));
+                startActivity(browserIntent);
+            }
+        });
+        builder.setMessage(rawResult.getText());
+        AlertDialog alert1 = builder.create();
+        alert1.show();
+    }
+    //--------- QR Scanner
+
 
     private class GPSTracker implements LocationListener {
         @Override
@@ -216,8 +318,5 @@ public class MainActivity extends AppCompatActivity {
                                     int status, Bundle extras) {
             // TODO Auto-generated method stub
         }
-
-
-
     }
 }
