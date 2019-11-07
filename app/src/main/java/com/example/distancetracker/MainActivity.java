@@ -1,14 +1,11 @@
 package com.example.distancetracker;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -18,16 +15,10 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.zxing.Result;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -44,21 +35,29 @@ public class MainActivity extends AppCompatActivity  {
     private LocationListener locationListener = null;
     private Button BtnStart = null;
     private Button BtnStop = null;
-    private TextView v_longitude = null;
-    private TextView v_latitude = null;
-    private TextView v_location = null;
+    private Button BtnQR = null;
+    private TextView v_oldLongitude = null;
+    private TextView v_oldLatitude = null;
+    private TextView v_oldLocation = null;
+
+    private TextView v_latestLongitude = null;
+    private TextView v_latestLatitude = null;
+    private TextView v_latestLocation = null;
+
     private TextView v_distance = null;
+    private TextView v_licencePlate = null;
+
     //private TextView v_update_status = null;
     private TextView v_gps_status = null;
-
-    String longitude = "";
-    String latitude = "";
-    String location = "";
-    String altitude = "";
 
     double longOld = 0;
     double latOld = 0;
     float distancecalc = 0;
+
+    String start_Address = null;
+    String end_Address = null;
+
+    boolean startLocationAssigned = false;
 
     DateFormat df = new SimpleDateFormat("yyyyMMdd");
     String fromDate = "20120607";
@@ -73,22 +72,29 @@ public class MainActivity extends AppCompatActivity  {
 
         ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
 
-        v_longitude = (TextView) findViewById(R.id.Lon_view);
-        v_latitude = (TextView) findViewById(R.id.Lat_view);
-        v_location = (TextView) findViewById(R.id.Loc_view);
+        v_oldLongitude = (TextView) findViewById(R.id.First_Lon_view);
+        v_oldLatitude = (TextView) findViewById(R.id.First_Lat_view);
+        v_oldLocation = (TextView) findViewById(R.id.First_Loc_view);
+
+        v_latestLongitude = (TextView) findViewById(R.id.Latest_Lon_view);
+        v_latestLatitude = (TextView) findViewById(R.id.Latest_Lat_view);
+        v_latestLocation = (TextView) findViewById(R.id.Latest_Loc_view);
+
         v_distance = (TextView) findViewById(R.id.Distance_view);
         v_gps_status = (TextView) findViewById(R.id.Gps_status);
+        v_licencePlate = (TextView) findViewById(R.id.LicencePlate_view);
+
         BtnStart = (Button) findViewById(R.id.btnStart);
         BtnStop = (Button) findViewById(R.id.btnStop);
+        BtnQR = (Button) findViewById(R.id.btnQR);
 
         //Waiting for car licence plate
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            v_gps_status.setText(extras.getString("QR"));
+            v_licencePlate.setText(extras.getString("QR"));
         }
 
-
-        BtnStop.setOnClickListener(new View.OnClickListener() {
+        BtnQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent QRIntent =  new Intent(MainActivity.this, QRScannerActivity.class);
@@ -109,6 +115,7 @@ public class MainActivity extends AppCompatActivity  {
 
                     e.printStackTrace();
                 }
+
                 c1 = Calendar.getInstance();
                 //Change to Calendar Date
                 c1.setTime(startDate);
@@ -134,42 +141,47 @@ public class MainActivity extends AppCompatActivity  {
     private class GPSTracker implements LocationListener {
         @Override
         public void onLocationChanged(Location loc) {
-            //Try to get city name
-            String city_name = null;
             Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
             List<Address> addresses;
 
             try {
-
                 for (int j = 0; j <= 10; j++)
                 {
                     addresses = gcd.getFromLocation(loc.getLatitude(), loc.getLongitude(), 1);
-
                     if (addresses.size() > 0) {
                         Address address = addresses.get(0);
-                        city_name = address.getAddressLine(0);
+                        if (start_Address == null) {
+                            start_Address = address.getAddressLine(0);
+                        }
+                        else {
+                            end_Address = address.getAddressLine(0);
+                        }
+
                     }
                 }
             } catch (IOException e) {
-                city_name = "unknown";
+                //end_Address = "unknown";
                 e.printStackTrace();
             }
-
-            latitude = "" + loc.getLatitude(); //Get latitude
-            longitude = "" + loc.getLongitude(); //Get longitude
 
             if(latOld == 0 || longOld == 0)
             {
                 latOld = loc.getLatitude();
                 longOld = loc.getLongitude();
-
             }
 
-            location = "" + city_name; //Get city name
-            altitude = "" + loc.getAltitude() + " m"; //Get height in meters
-            v_latitude.setText(latitude);
-            v_longitude.setText(longitude);
-            v_location.setText(location);
+            if(!startLocationAssigned)
+            {
+                v_oldLatitude.setText(String.valueOf(latOld));
+                v_oldLongitude.setText(String.valueOf(longOld));
+                startLocationAssigned = true;
+            }
+
+            v_oldLocation.setText(start_Address);
+            v_latestLatitude.setText(String.valueOf(loc.getLatitude()));
+            v_latestLongitude.setText(String.valueOf(loc.getLongitude()));
+            v_latestLocation.setText(end_Address);
+
             v_distance.setText(calculateDistance(latOld, longOld, loc.getLatitude(),loc.getLongitude()) + " m");
             v_gps_status.setText("GPS working");
             v_gps_status.setTextColor(Color.parseColor("#33cc33"));

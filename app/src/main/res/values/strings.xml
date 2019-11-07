@@ -13,4 +13,5 @@
     <string name="btnRoute">Show Route</string>
     <string name="title_activity_maps">Map</string>
     <string name="btnStop">Stop</string>
+    <string name="btnQR">QR Scanner</string>
 </resources>
