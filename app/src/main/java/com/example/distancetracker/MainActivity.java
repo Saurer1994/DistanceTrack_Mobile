@@ -17,6 +17,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -69,6 +70,7 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); //portrait mode
 
@@ -101,10 +103,14 @@ public class MainActivity extends AppCompatActivity  {
             public void onClick(View view) {
                 //Intent QRIntent =  new Intent(MainActivity.this, QRScannerActivity.class);
                 //startActivity(QRIntent);
-                Intent MapIntent =  new Intent(MainActivity.this, MapsActivity.class);
+
+                /*Intent MapIntent =  new Intent(MainActivity.this, MapsActivity.class);
                 MapIntent.putExtra("LAT", latOld);
                 MapIntent.putExtra("LON", longOld);
-                startActivity(MapIntent);
+                startActivity(MapIntent);*/
+
+                Intent Loginintent = new Intent(MainActivity.this, Login.class);
+                startActivity(Loginintent);
             }
         });
 
