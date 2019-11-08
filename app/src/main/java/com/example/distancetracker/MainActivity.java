@@ -20,6 +20,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -97,8 +99,12 @@ public class MainActivity extends AppCompatActivity  {
         BtnQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent QRIntent =  new Intent(MainActivity.this, QRScannerActivity.class);
-                startActivity(QRIntent);
+                //Intent QRIntent =  new Intent(MainActivity.this, QRScannerActivity.class);
+                //startActivity(QRIntent);
+                Intent MapIntent =  new Intent(MainActivity.this, MapsActivity.class);
+                MapIntent.putExtra("LAT", latOld);
+                MapIntent.putExtra("LON", longOld);
+                startActivity(MapIntent);
             }
         });
 
