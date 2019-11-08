@@ -15,4 +15,7 @@
     <string name="btnStop">Stop</string>
     <string name="btnQR">QR Scanner</string>
     <string name="title_activity_test">Map</string>
+    <string name="btn_login">LOGIN</string>
+    <string name="Username">Username</string>
+    <string name="Password">Password</string>
 </resources>

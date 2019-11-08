@@ -17,49 +17,54 @@
         android:paddingVertical="35dp"
         android:textAlignment="center"
         android:textSize="60sp" />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_marginHorizontal="30dp"
-        android:layout_height="wrap_content"
-        android:text="User name"
-        android:textColor="@color/colorAccent"
-        />
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
 
-        android:layout_marginHorizontal="30dp"
-        />
     <TextView
         android:layout_width="match_parent"
-        android:layout_marginHorizontal="30dp"
         android:layout_height="wrap_content"
-        android:text="Password"
+        android:layout_marginHorizontal="30dp"
+        android:text="@string/Username"
         android:textColor="@color/colorAccent"
-        />
+        android:textSize="18sp" />
+
     <EditText
+        android:id="@+id/editText_user"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Password"
-        android:inputType="textPassword"
-        android:paddingHorizontal="12dp"
-        android:paddingVertical="20dp"
         android:layout_marginHorizontal="30dp"
-        />
+        android:hint="@string/Username"
+        android:textSize="18sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:text="@string/Password"
+        android:textColor="@color/colorAccent"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/editText_pass"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:hint="@string/Password"
+        android:inputType="textPassword"
+        android:textSize="18sp" />
 
     <Button
+        android:id="@+id/btn_Login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
-        android:layout_marginVertical="20dp"
+        android:layout_marginVertical="50dp"
         android:background="@drawable/button_btn"
-        android:text="Login"
+        android:text="@string/btn_login"
         android:textColor="@color/colorPrimary" />
+
     <TextView
+        android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="No Account yet? create One"
-        android:layout_marginHorizontal="30dp"
-        android:textAlignment="center"
-        />
+        android:text="TextView" />
+
 </LinearLayout>
