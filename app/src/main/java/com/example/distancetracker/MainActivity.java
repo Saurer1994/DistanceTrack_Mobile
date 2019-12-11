@@ -74,7 +74,11 @@ public class MainActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); //portrait mode
 
-        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
+        //Intent LoginActivity = new Intent(MainActivity.this, StopActivity.class);
+        //startActivity(LoginActivity);
+        Intent LoginActivity = new Intent(MainActivity.this, Login.class);
+        startActivity(LoginActivity);
+
 
         v_oldLongitude = (TextView) findViewById(R.id.First_Lon_view);
         v_oldLatitude = (TextView) findViewById(R.id.First_Lat_view);
@@ -117,23 +121,9 @@ public class MainActivity extends AppCompatActivity  {
         BtnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Convert to Date
-                Date startDate = null;
-                try {
-
-                    startDate = df.parse(fromDate);
-
-                } catch (ParseException e) {
-
-                    e.printStackTrace();
-                }
-
-                c1 = Calendar.getInstance();
-                //Change to Calendar Date
-                c1.setTime(startDate);
 
                 //Check if GPS is enabled
-                locationListener = new GPSTracker();
+                    locationListener = new GPSTracker();
 
                 if (ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     v_gps_status.setText("Wait for signal");
@@ -146,6 +136,7 @@ public class MainActivity extends AppCompatActivity  {
                 }
             }
         });
+
         locationMangaer = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     }
 
@@ -155,6 +146,20 @@ public class MainActivity extends AppCompatActivity  {
         public void onLocationChanged(Location loc) {
             Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
             List<Address> addresses;
+            //Convert to Date
+            Date startDate = null;
+            try {
+
+                startDate = df.parse(fromDate);
+
+            } catch (ParseException e) {
+
+                e.printStackTrace();
+            }
+
+            c1 = Calendar.getInstance();
+            //Change to Calendar Date
+            c1.setTime(startDate);
 
             try {
                 for (int j = 0; j <= 10; j++)

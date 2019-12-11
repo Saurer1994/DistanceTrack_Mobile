@@ -18,4 +18,8 @@
     <string name="btn_login">LOGIN</string>
     <string name="Username">Username</string>
     <string name="Password">Password</string>
+    <string name="btn_start">START</string>
+    <string name="privateDrive">Private</string>
+    <string name="business">Business</string>
+    <string name="btn_Stop">STOP</string>
 </resources>

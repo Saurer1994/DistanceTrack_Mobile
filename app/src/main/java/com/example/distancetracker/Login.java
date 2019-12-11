@@ -7,6 +7,8 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.AsyncTaskLoader;
 import androidx.loader.content.Loader;
 
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -29,7 +31,6 @@ public class Login extends AppCompatActivity implements LoaderManager.LoaderCall
 
     public EditText user;
     public EditText password;
-    public TextView response;
     public Button btn_Login;
 
     public URL SearchUrl;
@@ -42,10 +43,10 @@ public class Login extends AppCompatActivity implements LoaderManager.LoaderCall
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); //portrait mode
 
         user = findViewById(R.id.editText_user);
         password = findViewById(R.id.editText_pass);
-        response = findViewById(R.id.textView2);
         btn_Login = findViewById(R.id.btn_Login);
 
         btn_Login.setOnClickListener(new View.OnClickListener() {
@@ -56,12 +57,6 @@ public class Login extends AppCompatActivity implements LoaderManager.LoaderCall
                 makeSearchQuery();
             }
         });
-
-        /*
-        if (savedInstanceState != null) {
-            String queryUrl = savedInstanceState.getString(SEARCH_QUERY_URL_EXTRA);
-            textView_Json.setText(queryUrl);
-        }*/
 
         LoaderManager.getInstance(this).initLoader(SEARCH_LOADER, null, this);
     }
@@ -123,19 +118,14 @@ public class Login extends AppCompatActivity implements LoaderManager.LoaderCall
 
     @Override
     public void onLoadFinished(@NonNull Loader<String> loader, String data) {
-        response.setText(data);
+        Intent StartActivity = new Intent(Login.this, StartActivity.class);
+        startActivity(StartActivity);
+        //response.setText(data);
     }
 
     @Override
     public void onLoaderReset(@NonNull Loader<String> loader) {
 
     }
-
-    /*
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(SEARCH_QUERY_URL_EXTRA, SearchUrl.toString());
-    }*/
 
 }

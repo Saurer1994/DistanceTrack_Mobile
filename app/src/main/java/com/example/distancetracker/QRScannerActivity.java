@@ -137,7 +137,7 @@ public class QRScannerActivity extends AppCompatActivity implements ZXingScanner
             }
         });
 
-        Intent CallMainActivity = new Intent(QRScannerActivity.this, MainActivity.class);
+        Intent CallMainActivity = new Intent(QRScannerActivity.this, StartActivity.class);
         CallMainActivity.putExtra("QR", rawResult.getText());
         startActivity(CallMainActivity);
         //builder.setMessage(rawResult.getText());
