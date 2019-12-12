@@ -1,10 +1,8 @@
 package com.example.distancetracker;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -17,11 +15,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
-
-import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -76,8 +71,9 @@ public class MainActivity extends AppCompatActivity  {
 
         //Intent LoginActivity = new Intent(MainActivity.this, StopActivity.class);
         //startActivity(LoginActivity);
-        Intent LoginActivity = new Intent(MainActivity.this, Login.class);
+        Intent LoginActivity = new Intent(MainActivity.this, UserLoginActivity.class);
         startActivity(LoginActivity);
+        finish();
 
 
         v_oldLongitude = (TextView) findViewById(R.id.First_Lon_view);
@@ -113,7 +109,7 @@ public class MainActivity extends AppCompatActivity  {
                 MapIntent.putExtra("LON", longOld);
                 startActivity(MapIntent);*/
 
-                Intent Loginintent = new Intent(MainActivity.this, Login.class);
+                Intent Loginintent = new Intent(MainActivity.this, UserLoginActivity.class);
                 startActivity(Loginintent);
             }
         });

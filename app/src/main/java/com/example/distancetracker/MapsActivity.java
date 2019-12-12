@@ -33,6 +33,7 @@ import java.util.List;
 //https://www.journaldev.com/10365/android-google-maps-api
 //https://www.journaldev.com/13373/android-google-map-drawing-route-two-points
 //https://medium.com/@sraju432/drawing-route-between-two-points-using-google-map-ab85f4906035
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback  {
 
     private GoogleMap mMap;
@@ -71,9 +72,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
         }*/
 
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 16));
+        LatLng start = new LatLng(47.281281, 15.969010);
+        //LatLng end = new LatLng(48.208176, 16.373819);
+        mMap.addMarker(new MarkerOptions().position(start).title("Startposition"));
+        //mMap.addMarker(new MarkerOptions().position(end).title("Endposition"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(start, 16));
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -85,6 +88,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 // Adding new item to the ArrayList
                 MarkerPoints.add(point);
+                //MarkerPoints.add(new LatLng(48.208176, 16.373819));
+
+
                 // Creating MarkerOptions
                 MarkerOptions options = new MarkerOptions();
                 // Setting the position of the marker
@@ -173,11 +179,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             HttpURLConnection urlConnection = null;
             try {
                 URL url = new URL(strUrl);
-// Creating an http connection to communicate with url
+                // Creating an http connection to communicate with url
                 urlConnection = (HttpURLConnection) url.openConnection();
-// Connecting to url
+                // Connecting to url
                 urlConnection.connect();
-// Reading data from url
+                // Reading data from url
                 iStream = urlConnection.getInputStream();
                 BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
                 StringBuffer sb = new StringBuffer();
@@ -210,7 +216,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.d("ParserTask",jsonData[0].toString());
                 DataParser parser = new DataParser();
                 Log.d("ParserTask", parser.toString());
-// Starts parsing data
+                // Starts parsing data
                 routes = parser.parse(jObject);
                 Log.d("ParserTask","Executing routes");
                 Log.d("ParserTask",routes.toString());
@@ -226,13 +232,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         protected void onPostExecute(List<List<HashMap<String, String>>> result) {
             ArrayList<LatLng> points;
             PolylineOptions lineOptions = null;
-// Traversing through all the routes
+            // Traversing through all the routes
             for (int i = 0; i < result.size(); i++) {
                 points = new ArrayList<>();
                 lineOptions = new PolylineOptions();
-// Fetching i-th route
+                // Fetching i-th route
                 List<HashMap<String, String>> path = result.get(i);
-// Fetching all the points in i-th route
+                // Fetching all the points in i-th route
                 for (int j = 0; j < path.size(); j++) {
                     HashMap<String, String> point = path.get(j);
                     double lat = Double.parseDouble(point.get("lat"));
@@ -240,13 +246,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     LatLng position = new LatLng(lat, lng);
                     points.add(position);
                 }
-// Adding all the points in the route to LineOptions
+                // Adding all the points in the route to LineOptions
                 lineOptions.addAll(points);
                 lineOptions.width(10);
                 lineOptions.color(Color.RED);
                 Log.d("onPostExecute","onPostExecute lineoptions decoded");
             }
-// Drawing polyline in the Google Map for the i-th route
+            // Drawing polyline in the Google Map for the i-th route
             if(lineOptions != null) {
                 mMap.addPolyline(lineOptions);
             }

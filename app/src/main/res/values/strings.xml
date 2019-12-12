@@ -22,4 +22,13 @@
     <string name="privateDrive">Private</string>
     <string name="business">Business</string>
     <string name="btn_Stop">STOP</string>
+    <string name="business_drive">Business Drive</string>
+    <string name="dummy_time">02:15:12</string>
+    <string name="time">Time</string>
+    <string name="dummy_distance">199,0 km</string>
+    <string name="distance">Distance</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_save">Save</string>
+    <string name="scan_qr">Scan QR Code</string>
+    <string name="Select" >Select Car</string>
 </resources>

@@ -20,19 +20,12 @@ public class StartActivity extends AppCompatActivity {
 
         btnStart = findViewById(R.id.btn_stop);
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null)
-        {
-            Intent StopActivity = new Intent(StartActivity.this, StopActivity.class);
-            StopActivity.putExtra("QRCODE", extras.getString("QR"));
-            startActivity(StopActivity);
-        }
-
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent QRIntent =  new Intent(StartActivity.this, QRScannerActivity.class);
+                Intent QRIntent =  new Intent(StartActivity.this, CarSelectionActivity.class);
                 startActivity(QRIntent);
+                finish();
             }
         });
     }

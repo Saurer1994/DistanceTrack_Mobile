@@ -30,6 +30,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import static android.widget.Toast.makeText;
+
 public class StopActivity extends AppCompatActivity {
 
     private LocationManager locationMangaer = null;
@@ -47,13 +49,11 @@ public class StopActivity extends AppCompatActivity {
     private double latOld = 0;
     private float distancecalc = 0;
 
-    private String QRCode = "";
+    private String car = "";
     private String TypeOfDrive = "";
 
     private boolean startLocationAssigned = false;
 
-    public CheckBox checkbox_private;
-    public CheckBox checkbox_business;
     public TextView textViewDistance;
     public Button btnStop;
 
@@ -64,42 +64,28 @@ public class StopActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(StopActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
 
         textViewDistance = findViewById(R.id.textView_distance);
-        checkbox_private = findViewById(R.id.checkBox_private);
-        checkbox_business = findViewById(R.id.checkBox_business);
         btnStop = findViewById(R.id.btn_stop);
 
         locationMangaer = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            QRCode = extras.getString("QRCODE");
+            car = extras.getString("CAR");
+            Toast.makeText(StopActivity.this, car, Toast.LENGTH_LONG).show();
         }
 
         btnStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Test();
+                Intent mapsActivity = new Intent(StopActivity.this, MapsActivity.class);
+                startActivity(mapsActivity);
+                finish();
             }
         });
 
         initGpsTracker();
 
     }
-
-    public void Test(){
-        Toast.makeText(this, QRCode, Toast.LENGTH_LONG).show();
-    }
-    /*
-     if (checkbox_private.isChecked() && checkbox_business.isChecked() || !checkbox_private.isChecked() && !checkbox_business.isChecked() )
-    {
-        Toast.makeText(StartActivity.this,"You have to choose one option",Toast.LENGTH_LONG).show();
-
-    }else {
-
-        Intent QRIntent =  new Intent(StartActivity.this, QRScannerActivity.class);
-        startActivity(QRIntent);
-    }*/
-
 
     public void initGpsTracker(){
         //Check if GPS is enabled

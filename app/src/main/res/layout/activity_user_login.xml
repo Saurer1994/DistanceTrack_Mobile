@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.distancetracker.Login"
+    tools:context=".UserLoginActivity"
     >
 
     <TextView
@@ -52,7 +52,7 @@
         android:textSize="18sp" />
 
     <Button
-        android:id="@+id/btn_Login"
+        android:id="@+id/btn_LoginUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="30dp"
