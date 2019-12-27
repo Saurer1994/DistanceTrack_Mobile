@@ -8,7 +8,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -17,14 +16,10 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -37,10 +32,10 @@ public class StopActivity extends AppCompatActivity {
     private LocationManager locationMangaer = null;
     private LocationListener locationListener = null;
 
-    private DateFormat df = new SimpleDateFormat("yyyyMMdd");
-    private String fromDate = "20120607";
-    private String toDate = "20120913";
-    private Calendar c1;
+    private Calendar calendar;
+
+    Long startTime;
+    String mills;
 
     private String start_Address = null;
     private String end_Address = null;
@@ -52,7 +47,10 @@ public class StopActivity extends AppCompatActivity {
     private String car = "";
     private String TypeOfDrive = "";
 
-    private boolean startLocationAssigned = false;
+    double startLng;
+    double startlat;
+    double stopLng;
+    double stopLat;
 
     public TextView textViewDistance;
     public Button btnStop;
@@ -71,13 +69,26 @@ public class StopActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             car = extras.getString("CAR");
-            Toast.makeText(StopActivity.this, car, Toast.LENGTH_LONG).show();
         }
+        startTime = Calendar.getInstance().getTimeInMillis();
 
         btnStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                Long endDate = Calendar.getInstance().getTimeInMillis();
+                mills = Long.toString(endDate - startTime);
+
+                String[] data = new String[6];
+                data[0] = textViewDistance.getText().toString();
+                data[1] = Double.toString(startlat);
+                data[2] = Double.toString(startLng);
+                data[3] = Double.toString(stopLat);
+                data[4] = Double.toString(stopLng);
+                data[5] = mills;
+
                 Intent mapsActivity = new Intent(StopActivity.this, MapsActivity.class);
+                mapsActivity.putExtra("DATA", data );
                 startActivity(mapsActivity);
                 finish();
             }
@@ -88,17 +99,15 @@ public class StopActivity extends AppCompatActivity {
     }
 
     public void initGpsTracker(){
-        //Check if GPS is enabled
+
         locationListener = new GPSTracker();
 
         if (ContextCompat.checkSelfPermission(StopActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             //v_gps_status.setText("Wait for signal");
-            //v_gps_status.setTextColor(Color.parseColor("#0066ff"));
             locationMangaer.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
         }
         else {
             //v_gps_status.setText("No GPS-Access!!!");
-            //v_gps_status.setTextColor(Color.parseColor("#ff0000"));
         }
     }
     private class GPSTracker implements LocationListener {
@@ -106,38 +115,23 @@ public class StopActivity extends AppCompatActivity {
         public void onLocationChanged(Location loc) {
             Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
             List<Address> addresses;
-            //Convert to Date
-            Date startDate = null;
-            try {
-
-                startDate = df.parse(fromDate);
-
-            } catch (ParseException e) {
-
-                e.printStackTrace();
-            }
-
-            c1 = Calendar.getInstance();
-            //Change to Calendar Date
-            c1.setTime(startDate);
 
             try {
-                for (int j = 0; j <= 10; j++)
-                {
-                    addresses = gcd.getFromLocation(loc.getLatitude(), loc.getLongitude(), 1);
-                    if (addresses.size() > 0) {
-                        Address address = addresses.get(0);
-                        if (start_Address == null) {
-                            start_Address = address.getAddressLine(0);
-                        }
-                        else {
-                            end_Address = address.getAddressLine(0);
-                        }
-
+                addresses = gcd.getFromLocation(loc.getLatitude(), loc.getLongitude(), 1);
+                if (addresses.size() > 0) {
+                    Address address = addresses.get(0);
+                    if (start_Address == null) {
+                        start_Address = address.getAddressLine(0);
+                        startlat = loc.getLatitude();
+                        startLng = loc.getLongitude();
+                    }
+                    else {
+                        end_Address = address.getAddressLine(0);
+                        stopLat = loc.getLatitude();
+                        stopLng = loc.getLongitude();
                     }
                 }
             } catch (IOException e) {
-                //end_Address = "unknown";
                 e.printStackTrace();
             }
 
@@ -147,18 +141,6 @@ public class StopActivity extends AppCompatActivity {
                 longOld = loc.getLongitude();
             }
 
-            if(!startLocationAssigned)
-            {
-                //v_oldLatitude.setText(String.valueOf(latOld));
-                //v_oldLongitude.setText(String.valueOf(longOld));
-                startLocationAssigned = true;
-            }
-
-            //v_oldLocation.setText(start_Address);
-            //v_latestLatitude.setText(String.valueOf(loc.getLatitude()));
-            //v_latestLongitude.setText(String.valueOf(loc.getLongitude()));
-            //v_latestLocation.setText(end_Address);
-
             if(calculateDistance(latOld, longOld, loc.getLatitude(),loc.getLongitude()) < 1000)
             {
                 double m = calculateDistance(latOld, longOld, loc.getLatitude(),loc.getLongitude());
@@ -167,12 +149,6 @@ public class StopActivity extends AppCompatActivity {
                 double km = calculateDistance(latOld, longOld, loc.getLatitude(),loc.getLongitude()) /1000;
                 textViewDistance.setText(String.format("%.2f", km) + " km");
             }
-
-
-            //v_gps_status.setText("GPS working");
-            //v_gps_status.setTextColor(Color.parseColor("#33cc33"));
-            Calendar c = Calendar.getInstance(); //Get time on system
-            //v_update_status.setText("Last update: " + c.get(Calendar.HOUR_OF_DAY) + ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND));
         }
 
 
