@@ -30,5 +30,7 @@
     <string name="btn_cancel">Cancel</string>
     <string name="btn_save">Save</string>
     <string name="scan_qr">Scan QR Code</string>
-    <string name="Select" >Select Car</string>
+    <string name="Select">Select Car</string>
+    <string name="OR_textview">OR</string>
+    <string name="ChooseCar_textview">Click car to choose</string>
 </resources>

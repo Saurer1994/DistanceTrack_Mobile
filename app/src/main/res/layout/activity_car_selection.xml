@@ -24,7 +24,7 @@
         android:id="@+id/btn_scan_qr"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="24dp"
         android:text="@string/scan_qr"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -35,33 +35,24 @@
         android:id="@+id/btn_select_car"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
+        android:layout_marginTop="24dp"
         android:text="@string/Select"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Spinner
-        android:id="@+id/spinner"
-        style="@style/Widget.AppCompat.Spinner"
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:layout_margin="10dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/spinner_bg"
-        android:dropDownWidth="300dp"
-        android:dropDownVerticalOffset="?attr/dropdownListPreferredItemHeight"
-        android:paddingRight="14dp"
-        android:popupBackground="@android:color/white"
-        android:popupElevation="3dp"
-        android:stateListAnimator="@drawable/spinner_sla"
-        app:layout_constraintBottom_toTopOf="@+id/btn_select_car"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/OR_textview"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_scan_qr" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

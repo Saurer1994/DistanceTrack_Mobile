@@ -21,17 +21,17 @@ public class CarSelectionActivity extends AppCompatActivity {
         selectCar = (Button) findViewById(R.id.btn_select_car);
         scanQr = (Button) findViewById(R.id.btn_scan_qr);
 
-        final Spinner dropdown = findViewById(R.id.spinner);
-        String[] items = new String[]{"Skoda Octavia", "BMW 320", "Audi A7"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
-        dropdown.setAdapter(adapter);
+        //final Spinner dropdown = findViewById(R.id.spinner);
+        //String[] items = new String[]{"Skoda Octavia", "BMW 320", "Audi A7"};
+        //ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        //dropdown.setAdapter(adapter);
 
         selectCar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent QRIntent =  new Intent(CarSelectionActivity.this, StopActivity.class);
-                QRIntent.putExtra("CAR", dropdown.getSelectedItem().toString());
-                startActivity(QRIntent);
+                Intent ChooseCar =  new Intent(CarSelectionActivity.this, ChooseCarActivity.class);
+                //QRIntent.putExtra("CAR", dropdown.getSelectedItem().toString());
+                startActivity(ChooseCar);
             }
         });
 
