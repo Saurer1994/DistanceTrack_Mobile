@@ -12,7 +12,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.distancetracker.Utilities.Base64Encoder;
 import com.example.distancetracker.Utilities.DirectionJSONParser;
+import com.example.distancetracker.Web_API.ApiAuthenticationClient;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,12 +26,17 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -47,14 +54,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public Button btncancel;
 
     private GoogleMap mMap;
-    ArrayList markerPoints= new ArrayList();
-    TextView distance;
-    TextView time;
-    double startLng;
-    double startlat;
-    double stopLng;
-    double stopLat;
-
+    private ArrayList markerPoints= new ArrayList();
+    private TextView distanceView;
+    private TextView timeView;
+    private String startLng;
+    private String startlat;
+    private String stopLng;
+    private String stopLat;
+    private String distance;
+    private String startDate;
+    private String endDate;
+    private String starAddress;
+    private String endAddress;
+    private String carId;
+    private JSONObject jsonObject;
+    private  String username;
+    private String password;
+    private final static String BASEURL = "https://logdriverwebapi20200102075926.azurewebsites.net/trip/create";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +81,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        distance = (TextView) findViewById(R.id.distance_lbl);
-        time = (TextView) findViewById(R.id.time_lbl);
+        distanceView = (TextView) findViewById(R.id.distance_lbl);
+        timeView = (TextView) findViewById(R.id.time_lbl);
         btncancel = (Button) findViewById(R.id.btn_cancel);
         btnsave = (Button) findViewById(R.id.btn_save);
 
@@ -74,25 +90,62 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            distance.setText(extras.getStringArray("DATA")[0]);
 
-            startlat = Double.valueOf(extras.getStringArray("DATA")[1]);
-            startLng = Double.valueOf(extras.getStringArray("DATA")[2]);
-            stopLat = Double.valueOf(extras.getStringArray("DATA")[3]);
-            stopLng = Double.valueOf(extras.getStringArray("DATA")[4]);
+            distance = extras.getStringArray("DATA")[0];
+            distanceView.setText(distance);
+
+            startlat = extras.getStringArray("DATA")[1];
+            startLng = extras.getStringArray("DATA")[2];
+            stopLat = extras.getStringArray("DATA")[3];
+            stopLng = extras.getStringArray("DATA")[4];
 
             long mills = Long.valueOf(extras.getStringArray("DATA")[5]);
             int seconds = (int) (mills / 1000) % 60 ;
             int minutes = (int) ((mills / (1000*60)) % 60);
             int hours   = (int) ((mills / (1000*60*60)) % 24);
+            timeView.setText(hours+":" +minutes + ":" + seconds );
 
-            time.setText(hours+":" +minutes + ":" + seconds );
+            endDate = extras.getStringArray("DATA")[6];
+            startDate = extras.getStringArray("DATA")[7];
+
+            starAddress = extras.getStringArray("DATA")[8];
+            endAddress = extras.getStringArray("DATA")[9];
+
+            carId = extras.getStringArray("DATA")[10];
+
+            username = extras.getStringArray("DATA")[11];
+            password = extras.getStringArray("DATA")[12];
+
+            jsonObject = new JSONObject();
+            try {
+                jsonObject.put("carId", carId);
+                jsonObject.put("startAddress", starAddress);
+                jsonObject.put("endAddress", endAddress);
+                jsonObject.put("startTime", startDate);
+                jsonObject.put("endTime", endDate);
+                jsonObject.put("startLongitude", startLng);
+                jsonObject.put("endLongitude", stopLng);
+                jsonObject.put("endLatitude", stopLat);
+                jsonObject.put("startLatitude", startlat);
+
+                String distanceWithoutMeter = distance.substring(0, distance.length() - 2);
+                jsonObject.put("distance", distanceWithoutMeter);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         }
+
+        final Bundle bundle = new Bundle();
+        bundle.putString("USERNAME", username);
+        bundle.putString("PASSWORD", password);
 
         btncancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(startActivity);
+                startActivity.putExtras(bundle);
                 finish();
             }
         });
@@ -100,7 +153,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btnsave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                try {
+
+                    //sendPost();
+                    ApiAuthenticationClient apiAuthenticationClient = new ApiAuthenticationClient(BASEURL, username, password);
+                    apiAuthenticationClient.setHttpMethod("POST");
+                    apiAuthenticationClient.setJsonObject(jsonObject);
+
+                    AsyncTask<Void, Void, String> execute = new MapsActivity.ExecuteNetworkOperations(apiAuthenticationClient);
+                    execute.execute();
+                } catch (Exception ex) {
+                }
+
                 Toast.makeText(MapsActivity.this, "Saved", Toast.LENGTH_LONG).show();
+                startActivity.putExtras(bundle);
                 startActivity(startActivity);
                 finish();
             }
@@ -111,9 +178,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
-        LatLng startPosition = new LatLng(startlat, startLng);
+
+
+        LatLng startPosition = new LatLng(Double.valueOf(startlat), Double.valueOf(startLng));
         mMap.addMarker(new MarkerOptions().position(startPosition).title("Startposition"));
-        LatLng endPosition = new LatLng(stopLat,stopLng);
+        LatLng endPosition = new LatLng(Double.valueOf(stopLat),Double.valueOf(stopLng));
         mMap.addMarker(new MarkerOptions().position(endPosition).title("Endposition"));
 
         //Map focus on route
@@ -271,4 +340,65 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         return data;
     }
+
+    public class ExecuteNetworkOperations extends AsyncTask<Void, Void, String> {
+
+        private ApiAuthenticationClient apiAuthenticationClient;
+        private String carsFromDb;
+
+        public ExecuteNetworkOperations (ApiAuthenticationClient apiAuthenticationClient) {
+            this.apiAuthenticationClient = apiAuthenticationClient;
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            try {
+                carsFromDb = apiAuthenticationClient.execute();
+                String i ="";
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return carsFromDb;
+        }
+    }
+
+   /* public void sendPost() {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL("https://logdriverwebapi20200102075926.azurewebsites.net/trip/create");
+
+                    String encoding = Base64Encoder.encode("Odo:1234");
+
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("POST");
+                    conn.setRequestProperty("Authorization", "Basic " + encoding);
+                    conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+                    conn.setRequestProperty("Accept","application/json");
+                    conn.setDoOutput(true);
+                    conn.setDoInput(true);
+
+                    Log.i("JSON", jsonObject.toString());
+                    DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+                    //os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
+                    os.writeBytes(jsonObject.toString());
+
+                    os.flush();
+                    os.close();
+
+                    Log.i("STATUS", String.valueOf(conn.getResponseCode()));
+                    Log.i("MSG" , conn.getResponseMessage());
+
+                    conn.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
+    }*/
 }

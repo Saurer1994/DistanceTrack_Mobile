@@ -33,4 +33,5 @@
     <string name="Select">Select Car</string>
     <string name="OR_textview">OR</string>
     <string name="ChooseCar_textview">Click car to choose</string>
+    <string name="choose_text">Choose</string>
 </resources>

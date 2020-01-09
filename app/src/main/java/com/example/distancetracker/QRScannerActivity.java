@@ -25,6 +25,8 @@ public class QRScannerActivity extends AppCompatActivity implements ZXingScanner
 
     private static final int REQUEST_CAMERA = 1;
     private ZXingScannerView mScannerView;
+    private String username;
+    private  String password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,15 @@ public class QRScannerActivity extends AppCompatActivity implements ZXingScanner
             } else {
                 requestPermission();
             }
+        }
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+
+            username = extras.getString("USERNAME");
+            password = extras.getString("PASSWORD");
+
+            Toast.makeText(this, username + password, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -137,8 +148,13 @@ public class QRScannerActivity extends AppCompatActivity implements ZXingScanner
             }
         });
 
+        final Bundle bundle = new Bundle();
+        bundle.putString("USERNAME", username);
+        bundle.putString("PASSWORD", password);
+        bundle.putString("CARID", rawResult.getText());
+
         Intent StopActivity = new Intent(QRScannerActivity.this, StopActivity.class);
-        StopActivity.putExtra("CAR", rawResult.getText());
+        StopActivity.putExtras(bundle);
         startActivity(StopActivity);
         finish();
     }

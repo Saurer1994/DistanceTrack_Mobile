@@ -19,14 +19,14 @@ public class UserLoginActivity extends AppCompatActivity {
     private EditText editText_login_password;
     private String username;
     private String password;
-    private String baseUrl;
+    private final static String BASEURL = "https://logdriverwebapi20200102075926.azurewebsites.net/car/getall";;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_login);
 
-        baseUrl = "https://webapplication120191104041755.azurewebsites.net/WeatherForecast/Get";
+
 
         editText_login_username = (EditText) findViewById(R.id.editText_user);
         editText_login_password = (EditText) findViewById(R.id.editText_pass);
@@ -41,12 +41,8 @@ public class UserLoginActivity extends AppCompatActivity {
                     username = editText_login_username.getText().toString();
                     password = editText_login_password.getText().toString();
 
-                    ApiAuthenticationClient apiAuthenticationClient =
-                            new ApiAuthenticationClient(
-                                    baseUrl
-                                    , username
-                                    , password
-                            );
+                    ApiAuthenticationClient apiAuthenticationClient = new ApiAuthenticationClient(BASEURL,username,password);
+                    apiAuthenticationClient.setHttpMethod("GET");
 
                     AsyncTask<Void, Void, String> execute = new UserLoginActivity.ExecuteNetworkOperation(apiAuthenticationClient);
                     execute.execute();
@@ -100,8 +96,8 @@ public class UserLoginActivity extends AppCompatActivity {
             //findViewById(R.id.loadingPanel).setVisibility(View.GONE);
 
             // LoginActivity Success
-            if (isValidCredentials != "") {
-                goToSecondActivity();
+            if (!isValidCredentials.equals("")) {
+                goToNextActivity();
             }
             // LoginActivity Failure
             else {
@@ -113,14 +109,13 @@ public class UserLoginActivity extends AppCompatActivity {
     /**
      * Open a new activity window.
      */
-    private void goToSecondActivity() {
+    private void goToNextActivity() {
         Bundle bundle = new Bundle();
-        bundle.putString("username", username);
-        bundle.putString("password", password);
-        bundle.putString("baseUrl", baseUrl);
+        bundle.putString("USERNAME", username);
+        bundle.putString("PASSWORD", password);
 
         Intent intent = new Intent(UserLoginActivity.this, StartActivity.class);
-        //intent.putExtras(bundle);
+        intent.putExtras(bundle);
         startActivity(intent);
         finish();
     }

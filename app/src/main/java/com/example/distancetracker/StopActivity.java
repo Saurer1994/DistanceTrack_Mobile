@@ -17,9 +17,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -34,23 +34,28 @@ public class StopActivity extends AppCompatActivity {
 
     private Calendar calendar;
 
-    Long startTime;
-    String mills;
+    private Long startTimeInMillis;
+    private String mills;
+    private String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+    private String startDate;
 
-    private String start_Address = null;
-    private String end_Address = null;
+    private String startAddress = null;
+    private String endAddress = null;
 
     private double longOld = 0;
     private double latOld = 0;
     private float distancecalc = 0;
 
-    private String car = "";
+    private String carId;
     private String TypeOfDrive = "";
 
-    double startLng;
-    double startlat;
-    double stopLng;
-    double stopLat;
+    private double startLng;
+    private double startlat;
+    private double stopLng;
+    private double stopLat;
+
+    private String username;
+    private String password;
 
     public TextView textViewDistance;
     public Button btnStop;
@@ -68,24 +73,40 @@ public class StopActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            car = extras.getString("CAR");
+            username = extras.getString("USERNAME");
+            password = extras.getString("PASSWORD");
+            carId = extras.getString("CARID");
         }
-        startTime = Calendar.getInstance().getTimeInMillis();
+        startTimeInMillis = Calendar.getInstance().getTimeInMillis();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+        Date today = Calendar.getInstance().getTime();
+        startDate = dateFormat.format(today);
 
         btnStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Long endDate = Calendar.getInstance().getTimeInMillis();
-                mills = Long.toString(endDate - startTime);
+                SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+                Date today = Calendar.getInstance().getTime();
+                String endDate = dateFormat.format(today);
 
-                String[] data = new String[6];
+                Long endTimeInMillis = Calendar.getInstance().getTimeInMillis();
+                mills = Long.toString(endTimeInMillis - startTimeInMillis);
+
+                String[] data = new String[13];
                 data[0] = textViewDistance.getText().toString();
                 data[1] = Double.toString(startlat);
                 data[2] = Double.toString(startLng);
                 data[3] = Double.toString(stopLat);
                 data[4] = Double.toString(stopLng);
                 data[5] = mills;
+                data[6] = endDate;
+                data[7] = startDate;
+                data[8] = startAddress;
+                data[9] = endAddress;
+                data[10] = carId;
+                data[11] = username;
+                data[12] = password;
 
                 Intent mapsActivity = new Intent(StopActivity.this, MapsActivity.class);
                 mapsActivity.putExtra("DATA", data );
@@ -120,13 +141,13 @@ public class StopActivity extends AppCompatActivity {
                 addresses = gcd.getFromLocation(loc.getLatitude(), loc.getLongitude(), 1);
                 if (addresses.size() > 0) {
                     Address address = addresses.get(0);
-                    if (start_Address == null) {
-                        start_Address = address.getAddressLine(0);
+                    if (startAddress == null) {
+                        startAddress = address.getAddressLine(0);
                         startlat = loc.getLatitude();
                         startLng = loc.getLongitude();
                     }
                     else {
-                        end_Address = address.getAddressLine(0);
+                        endAddress = address.getAddressLine(0);
                         stopLat = loc.getLatitude();
                         stopLng = loc.getLongitude();
                     }
