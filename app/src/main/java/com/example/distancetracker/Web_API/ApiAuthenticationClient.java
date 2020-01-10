@@ -112,6 +112,7 @@ public class ApiAuthenticationClient {
 
                     Log.i("STATUS", String.valueOf(connection.getResponseCode()));
                     Log.i("MSG", connection.getResponseMessage());
+                    Log.i("MSG", String.valueOf(connection.getErrorStream()));
 
                     BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     while ((line = br.readLine()) != null) {

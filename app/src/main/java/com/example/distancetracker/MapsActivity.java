@@ -84,7 +84,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
 
-            distance = extras.getStringArray("DATA")[0];
+            //replace comma with a point
+            distance = extras.getStringArray("DATA")[0].replace(",", ".");
             distanceView.setText(distance);
 
             startlat = extras.getStringArray("DATA")[1];
@@ -123,6 +124,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 String distanceWithoutMeter = distance.substring(0, distance.length() - 2);
                 jsonObject.put("distance", distanceWithoutMeter);
+
+                Log.i("JSON", jsonObject.toString());
 
             } catch (JSONException e) {
                 e.printStackTrace();

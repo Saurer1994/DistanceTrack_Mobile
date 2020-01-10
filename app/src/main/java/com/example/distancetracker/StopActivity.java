@@ -24,6 +24,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import static android.widget.Toast.makeText;
 
@@ -51,11 +52,13 @@ public class StopActivity extends AppCompatActivity {
 
     private double startLng;
     private double startlat;
-    private double stopLng;
-    private double stopLat;
+    private double endLng;
+    private double endLat;
 
     private String username;
     private String password;
+    private boolean locationFound;
+    private boolean checkIfEndAdressIsAssigned;
 
     public TextView textViewDistance;
     public Button btnStop;
@@ -69,6 +72,9 @@ public class StopActivity extends AppCompatActivity {
         textViewDistance = findViewById(R.id.textView_distance);
         btnStop = findViewById(R.id.btn_stop);
 
+        locationFound = false;
+        checkIfEndAdressIsAssigned = false;
+
         locationMangaer = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         Bundle extras = getIntent().getExtras();
@@ -79,6 +85,7 @@ public class StopActivity extends AppCompatActivity {
         }
         startTimeInMillis = Calendar.getInstance().getTimeInMillis();
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+01:00"));
         Date today = Calendar.getInstance().getTime();
         startDate = dateFormat.format(today);
 
@@ -86,32 +93,35 @@ public class StopActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-                Date today = Calendar.getInstance().getTime();
-                String endDate = dateFormat.format(today);
+                if (locationFound){
+                    SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+                    dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+01:00"));
+                    Date today = Calendar.getInstance().getTime();
+                    String endDate = dateFormat.format(today);
 
-                Long endTimeInMillis = Calendar.getInstance().getTimeInMillis();
-                mills = Long.toString(endTimeInMillis - startTimeInMillis);
+                    Long endTimeInMillis = Calendar.getInstance().getTimeInMillis();
+                    mills = Long.toString(endTimeInMillis - startTimeInMillis);
 
-                String[] data = new String[13];
-                data[0] = textViewDistance.getText().toString();
-                data[1] = Double.toString(startlat);
-                data[2] = Double.toString(startLng);
-                data[3] = Double.toString(stopLat);
-                data[4] = Double.toString(stopLng);
-                data[5] = mills;
-                data[6] = endDate;
-                data[7] = startDate;
-                data[8] = startAddress;
-                data[9] = endAddress;
-                data[10] = carId;
-                data[11] = username;
-                data[12] = password;
+                    String[] data = new String[13];
+                    data[0] = textViewDistance.getText().toString();
+                    data[1] = Double.toString(startlat);
+                    data[2] = Double.toString(startLng);
+                    data[3] = Double.toString(endLat);
+                    data[4] = Double.toString(endLng);
+                    data[5] = mills;
+                    data[6] = endDate;
+                    data[7] = startDate;
+                    data[8] = startAddress;
+                    data[9] = endAddress;
+                    data[10] = carId;
+                    data[11] = username;
+                    data[12] = password;
 
-                Intent mapsActivity = new Intent(StopActivity.this, MapsActivity.class);
-                mapsActivity.putExtra("DATA", data );
-                startActivity(mapsActivity);
-                finish();
+                    Intent mapsActivity = new Intent(StopActivity.this, MapsActivity.class);
+                    mapsActivity.putExtra("DATA", data );
+                    startActivity(mapsActivity);
+                    finish();
+                }
             }
         });
 
@@ -131,9 +141,13 @@ public class StopActivity extends AppCompatActivity {
             //v_gps_status.setText("No GPS-Access!!!");
         }
     }
+
     private class GPSTracker implements LocationListener {
         @Override
         public void onLocationChanged(Location loc) {
+
+            locationFound = true;
+
             Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
             List<Address> addresses;
 
@@ -145,12 +159,25 @@ public class StopActivity extends AppCompatActivity {
                         startAddress = address.getAddressLine(0);
                         startlat = loc.getLatitude();
                         startLng = loc.getLongitude();
+
+                        //if no endAddress is assigned it will be the same as the startAddress
+                        if(checkIfEndAdressIsAssigned == false){
+                            endAddress = startAddress;
+                            endLat = startlat;
+                            endLng = startLng;
+                        }
                     }
                     else {
+
+                        //if no endAddress is assigned it will be the same as the startAddress
+                        checkIfEndAdressIsAssigned = true;
+
                         endAddress = address.getAddressLine(0);
-                        stopLat = loc.getLatitude();
-                        stopLng = loc.getLongitude();
+                        endLat = loc.getLatitude();
+                        endLng = loc.getLongitude();
                     }
+
+
                 }
             } catch (IOException e) {
                 e.printStackTrace();
