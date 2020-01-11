@@ -5,9 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.NumberPicker;
+import android.widget.Toast;
 
 import com.example.distancetracker.Utilities.Car;
 import com.example.distancetracker.Web_API.ApiAuthenticationClient;
@@ -129,5 +132,31 @@ public class ChooseCarActivity extends AppCompatActivity{
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) { switch(item.getItemId()) {
+        case R.id.add:
+            Toast.makeText(this, "ADD", Toast.LENGTH_LONG).show();
+            return(true);
+        case R.id.reset:
+            Toast.makeText(this, "RESET", Toast.LENGTH_LONG).show();
+            return(true);
+        case R.id.logout:
+            Intent loginActivity  = new Intent(ChooseCarActivity.this, UserLoginActivity.class);
+            startActivity(loginActivity);
+            finish();
+            return(true);
+        case R.id.exit:
+            finish();
+    }
+        return(super.onOptionsItemSelected(item));
     }
 }

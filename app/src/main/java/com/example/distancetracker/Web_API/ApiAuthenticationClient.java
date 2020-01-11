@@ -128,6 +128,9 @@ public class ApiAuthenticationClient {
 
                 InputStream content = (InputStream) connection.getInputStream();
 
+                Log.i("STATUS", String.valueOf(connection.getResponseCode()));
+                Log.i("MSG", connection.getResponseMessage());
+
                 //connection.
                 BufferedReader in = new BufferedReader(new InputStreamReader(content));
 

@@ -14,9 +14,12 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -135,7 +138,7 @@ public class StopActivity extends AppCompatActivity {
 
         if (ContextCompat.checkSelfPermission(StopActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             //v_gps_status.setText("Wait for signal");
-            locationMangaer.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            locationMangaer.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 10, locationListener);
         }
         else {
             //v_gps_status.setText("No GPS-Access!!!");
@@ -192,10 +195,11 @@ public class StopActivity extends AppCompatActivity {
             if(calculateDistance(latOld, longOld, loc.getLatitude(),loc.getLongitude()) < 1000)
             {
                 double m = calculateDistance(latOld, longOld, loc.getLatitude(),loc.getLongitude());
-                textViewDistance.setText(String.format("%.2f", m) + " m");
+                textViewDistance.setText(String.format("%.0f", m) + " m");
             }else{
                 double km = calculateDistance(latOld, longOld, loc.getLatitude(),loc.getLongitude()) /1000;
-                textViewDistance.setText(String.format("%.2f", km) + " km");
+                String kmOutput = Double.toString(km).replace(",", ".");
+                textViewDistance.setText(String.format("%.0f", kmOutput) + " km");
             }
         }
 
@@ -221,9 +225,34 @@ public class StopActivity extends AppCompatActivity {
             // TODO Auto-generated method stub
         }
         @Override
-        public void onStatusChanged(String provider,
-                                    int status, Bundle extras) {
+        public void onStatusChanged(String provider, int status, Bundle extras) {
             // TODO Auto-generated method stub
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) { switch(item.getItemId()) {
+        case R.id.add:
+            Toast.makeText(this, "ADD", Toast.LENGTH_LONG).show();
+            return(true);
+        case R.id.reset:
+            Toast.makeText(this, "RESET", Toast.LENGTH_LONG).show();
+            return(true);
+        case R.id.logout:
+            Intent loginActivity  = new Intent(StopActivity.this, UserLoginActivity.class);
+            startActivity(loginActivity);
+            finish();
+            return(true);
+        case R.id.exit:
+            finish();
+    }
+        return(super.onOptionsItemSelected(item));
     }
 }

@@ -2,13 +2,10 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="oval">
-            <stroke android:color="#7613ff" android:width="5dp" />
-            <solid android:color="#7613ff"/>
+            <stroke android:color="#9C9B9B" android:width="5dp" />
+            <solid android:color="#FFFFFF"/>
             <size android:width="250dp" android:height="250dp"/>
-            <gradient
-                android:startColor="#7613ff"
-                android:endColor="#f91cff"
-                ></gradient>
+
         </shape>
     </item>
 </selector>

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/button_btn"
     tools:context=".StopActivity">
 
     <Button
@@ -27,10 +28,16 @@
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:layout_marginTop="170dp"
-        android:textAlignment="center"
+        android:layout_marginBottom="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:text=""
+        android:textAlignment="center"
         android:textSize="50sp"
         android:textStyle="bold"
+        android:textColor="@color/black"
+        android:background="@drawable/linearlayout_design"
+        app:layout_constraintBottom_toTopOf="@+id/btn_stop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

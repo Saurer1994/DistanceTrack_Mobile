@@ -1,5 +1,6 @@
 package com.example.distancetracker;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -26,7 +27,8 @@ public class UserLoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_login);
 
-
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
 
         editText_login_username = (EditText) findViewById(R.id.editText_user);
         editText_login_password = (EditText) findViewById(R.id.editText_pass);

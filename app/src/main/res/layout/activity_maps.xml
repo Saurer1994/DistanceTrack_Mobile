@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.distancetracker.MapsActivity"
-    >
+    android:background="@drawable/button_btn">
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -17,80 +17,75 @@
         tools:context=".MapsActivity" />
 
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:text="@string/distance"
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/distance_lbl"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:text="@string/dummy_distance"
-        android:textAlignment="center"
-        android:textSize="28sp" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:text="@string/time"
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/time_lbl"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:text="@string/dummy_time"
-        android:textAlignment="center"
-        android:textSize="28sp" />
-
-    <Switch
-        android:id="@+id/switch1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginRight="20dp"
-        android:switchMinWidth="50dp"
-        android:switchPadding="20dp"
-        android:text="@string/business_drive"
-        android:textAlignment="center"
-        android:textSize="18sp" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="15dp"
-        android:gravity="center"
-        >
+        android:orientation="vertical"
+        android:background="@drawable/linearlayout_design"
+        android:layout_margin="16dp">
 
-        <Button
-            android:id="@+id/btn_cancel"
-            android:layout_width="150dp"
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:text="@string/distance"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/distance_lbl"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:text="@string/btn_cancel" />
-
-        <Button
-            android:id="@+id/btn_save"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
-            android:layout_marginLeft="10dp"
-            android:text="@string/btn_save" />
+            android:text="@string/dummy_distance"
+            android:textAlignment="center"
+            android:textSize="28sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:text="@string/time"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/time_lbl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:text="@string/dummy_time"
+            android:textAlignment="center"
+            android:textSize="28sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_btn"
+                android:text="@string/btn_cancel" />
+
+            <Button
+                android:id="@+id/btn_save"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/button_btn"
+                android:text="@string/btn_save"
+                android:textAlignment="center" />
+        </LinearLayout>
     </LinearLayout>
-
-
 </LinearLayout>

@@ -34,4 +34,9 @@
     <string name="OR_textview">OR</string>
     <string name="ChooseCar_textview">Click car to choose</string>
     <string name="choose_text">Choose</string>
+    <string name="add">Add</string>
+    <string name="reset">Reset</string>
+    <string name="about">About</string>
+    <string name="exit">Exit</string>
+    <string name="logout">Logout</string>
 </resources>
