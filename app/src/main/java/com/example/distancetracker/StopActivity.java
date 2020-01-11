@@ -1,11 +1,13 @@
 package com.example.distancetracker;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -36,8 +38,6 @@ public class StopActivity extends AppCompatActivity {
     private LocationManager locationMangaer = null;
     private LocationListener locationListener = null;
 
-    private Calendar calendar;
-
     private Long startTimeInMillis;
     private String mills;
     private String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
@@ -51,7 +51,6 @@ public class StopActivity extends AppCompatActivity {
     private float distancecalc = 0;
 
     private String carId;
-    private String TypeOfDrive = "";
 
     private double startLng;
     private double startlat;
@@ -65,12 +64,19 @@ public class StopActivity extends AppCompatActivity {
 
     public TextView textViewDistance;
     public Button btnStop;
+    private Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stop);
         ActivityCompat.requestPermissions(StopActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
+
+        final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+
+        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+            buildAlertMessageNoGps();
+        }
 
         textViewDistance = findViewById(R.id.textView_distance);
         btnStop = findViewById(R.id.btn_stop);
@@ -80,11 +86,11 @@ public class StopActivity extends AppCompatActivity {
 
         locationMangaer = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            username = extras.getString("USERNAME");
-            password = extras.getString("PASSWORD");
-            carId = extras.getString("CARID");
+        bundle = getIntent().getExtras();
+        if (bundle != null) {
+            username = bundle.getString("USERNAME");
+            password = bundle.getString("PASSWORD");
+            carId = bundle.getString("CARID");
         }
         startTimeInMillis = Calendar.getInstance().getTimeInMillis();
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
@@ -239,11 +245,10 @@ public class StopActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) { switch(item.getItemId()) {
-        case R.id.add:
-            Toast.makeText(this, "ADD", Toast.LENGTH_LONG).show();
-            return(true);
-        case R.id.reset:
-            Toast.makeText(this, "RESET", Toast.LENGTH_LONG).show();
+        case R.id.back:
+            Intent ChooseCar =  new Intent(StopActivity.this, CarSelectionActivity.class);
+            ChooseCar.putExtras(bundle);
+            startActivity(ChooseCar);
             return(true);
         case R.id.logout:
             Intent loginActivity  = new Intent(StopActivity.this, UserLoginActivity.class);
@@ -254,5 +259,24 @@ public class StopActivity extends AppCompatActivity {
             finish();
     }
         return(super.onOptionsItemSelected(item));
+    }
+
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+
     }
 }

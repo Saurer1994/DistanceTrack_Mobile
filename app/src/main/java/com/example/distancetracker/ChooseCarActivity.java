@@ -32,6 +32,7 @@ public class ChooseCarActivity extends AppCompatActivity{
     private String username;
     private String password;
     private final static String BASEURL = "https://logdriverwebapi20200102075926.azurewebsites.net/car/getall";
+    private Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +60,7 @@ public class ChooseCarActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
 
-                final Bundle bundle = new Bundle();
+                bundle = new Bundle();
                 bundle.putString("USERNAME", username);
                 bundle.putString("PASSWORD", password);
                 bundle.putString("CARID",cars.get(picker.getValue()).getId());
@@ -143,12 +144,10 @@ public class ChooseCarActivity extends AppCompatActivity{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) { switch(item.getItemId()) {
-        case R.id.add:
-            Toast.makeText(this, "ADD", Toast.LENGTH_LONG).show();
-            return(true);
-        case R.id.reset:
-            Toast.makeText(this, "RESET", Toast.LENGTH_LONG).show();
-            return(true);
+        case R.id.back:
+            Intent ChooseCar =  new Intent(ChooseCarActivity.this, CarSelectionActivity.class);
+            ChooseCar.putExtras(bundle);
+            startActivity(ChooseCar);
         case R.id.logout:
             Intent loginActivity  = new Intent(ChooseCarActivity.this, UserLoginActivity.class);
             startActivity(loginActivity);

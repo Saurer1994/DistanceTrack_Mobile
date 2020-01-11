@@ -18,6 +18,7 @@ public class CarSelectionActivity extends AppCompatActivity {
     public Button scanQr;
     private String username;
     private String password;
+    private Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +35,7 @@ public class CarSelectionActivity extends AppCompatActivity {
             password = extras.getString("PASSWORD");
         }
 
-        final Bundle bundle = new Bundle();
+        bundle = new Bundle();
         bundle.putString("USERNAME", username);
         bundle.putString("PASSWORD", password);
 
@@ -67,11 +68,10 @@ public class CarSelectionActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) { switch(item.getItemId()) {
-        case R.id.add:
-            Toast.makeText(this, "ADD", Toast.LENGTH_LONG).show();
-            return(true);
-        case R.id.reset:
-            Toast.makeText(this, "RESET", Toast.LENGTH_LONG).show();
+        case R.id.back:
+            Intent ChooseCar =  new Intent(CarSelectionActivity.this, StartActivity.class);
+            ChooseCar.putExtras(bundle);
+            startActivity(ChooseCar);
             return(true);
         case R.id.logout:
             Intent loginActivity  = new Intent(CarSelectionActivity.this, UserLoginActivity.class);
@@ -80,6 +80,7 @@ public class CarSelectionActivity extends AppCompatActivity {
             return(true);
         case R.id.exit:
             finish();
+            return(true);
     }
         return(super.onOptionsItemSelected(item));
     }

@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.distancetracker.CarSelectionActivity"
+    android:screenOrientation="portrait"
     android:background="@drawable/button_btn">
 
     <LinearLayout
@@ -38,6 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/OR_textview"
+            android:layout_margin="20dp"
             android:textSize="30sp"
             android:textStyle="bold" />
 

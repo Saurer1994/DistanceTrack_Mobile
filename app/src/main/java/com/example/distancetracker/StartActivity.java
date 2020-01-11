@@ -62,20 +62,24 @@ public class StartActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) { switch(item.getItemId()) {
-        case R.id.add:
-            Toast.makeText(this, "ADD", Toast.LENGTH_LONG).show();
-            return(true);
-        case R.id.reset:
-            Toast.makeText(this, "RESET", Toast.LENGTH_LONG).show();
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        Intent loginActivity  = new Intent(StartActivity.this, UserLoginActivity.class);
+        switch(item.getItemId()) {
+
+        case R.id.back:
+            loginActivity  = new Intent(StartActivity.this, UserLoginActivity.class);
+            startActivity(loginActivity);
+            finish();
             return(true);
         case R.id.logout:
-            Intent loginActivity  = new Intent(StartActivity.this, UserLoginActivity.class);
+            loginActivity  = new Intent(StartActivity.this, UserLoginActivity.class);
             startActivity(loginActivity);
             finish();
             return(true);
         case R.id.exit:
             finish();
+            return(true);
     }
         return(super.onOptionsItemSelected(item));
     }
