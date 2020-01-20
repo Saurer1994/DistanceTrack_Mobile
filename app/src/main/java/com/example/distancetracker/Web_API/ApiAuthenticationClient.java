@@ -17,6 +17,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -100,24 +101,21 @@ public class ApiAuthenticationClient {
                 connection.setDoOutput(true);
 
                 try {
-                    connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+
+                    connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
 
                     Log.i("JSON", jsonObject.toString());
                     DataOutputStream os = new DataOutputStream(connection.getOutputStream());
 
-                    os.writeBytes(jsonObject.toString());
+                    os.write(jsonObject.toString().getBytes("UTF-8"));
 
                     os.flush();
                     os.close();
 
                     Log.i("STATUS", String.valueOf(connection.getResponseCode()));
                     Log.i("MSG", connection.getResponseMessage());
-                    Log.i("MSG", String.valueOf(connection.getErrorStream()));
 
-                    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    while ((line = br.readLine()) != null) {
-                        outputStringBuilder.append(line);
-                    }
+                    return String.valueOf(connection.getResponseCode());
 
                     }catch (IOException ex) { }
                 connection.disconnect();

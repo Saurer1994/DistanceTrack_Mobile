@@ -1,5 +1,6 @@
 package com.example.distancetracker;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -10,12 +11,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,6 +67,7 @@ public class StopActivity extends AppCompatActivity {
     private boolean checkIfEndAdressIsAssigned;
 
     public TextView textViewDistance;
+    public TextView textViewStatusGps;
     public Button btnStop;
     private Bundle bundle;
 
@@ -70,6 +75,13 @@ public class StopActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stop);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.show();
+
+        actionBar.setTitle("LOGDRIVER");
+        actionBar.setSubtitle("Press to stop your ride");
+
         ActivityCompat.requestPermissions(StopActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
 
         final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
@@ -79,6 +91,7 @@ public class StopActivity extends AppCompatActivity {
         }
 
         textViewDistance = findViewById(R.id.textView_distance);
+        textViewStatusGps = findViewById(R.id.textview_statusgps);
         btnStop = findViewById(R.id.btn_stop);
 
         locationFound = false;
@@ -112,7 +125,7 @@ public class StopActivity extends AppCompatActivity {
                     mills = Long.toString(endTimeInMillis - startTimeInMillis);
 
                     String[] data = new String[13];
-                    data[0] = textViewDistance.getText().toString();
+                    data[0] = Float.toString(distancecalc);
                     data[1] = Double.toString(startlat);
                     data[2] = Double.toString(startLng);
                     data[3] = Double.toString(endLat);
@@ -143,17 +156,22 @@ public class StopActivity extends AppCompatActivity {
         locationListener = new GPSTracker();
 
         if (ContextCompat.checkSelfPermission(StopActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            //v_gps_status.setText("Wait for signal");
-            locationMangaer.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 10, locationListener);
+            textViewStatusGps.setTextColor(Color.RED);
+            textViewStatusGps.setText("Waiting for signal");
+            locationMangaer.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
         }
         else {
-            //v_gps_status.setText("No GPS-Access!!!");
+            textViewStatusGps.setTextColor(Color.RED);
+            textViewStatusGps.setText("No GPS-Access");
         }
     }
 
     private class GPSTracker implements LocationListener {
+
         @Override
         public void onLocationChanged(Location loc) {
+
+            textViewStatusGps.setText("");
 
             locationFound = true;
 
@@ -177,7 +195,6 @@ public class StopActivity extends AppCompatActivity {
                         }
                     }
                     else {
-
                         //if no endAddress is assigned it will be the same as the startAddress
                         checkIfEndAdressIsAssigned = true;
 
@@ -204,8 +221,8 @@ public class StopActivity extends AppCompatActivity {
                 textViewDistance.setText(String.format("%.0f", m) + " m");
             }else{
                 double km = calculateDistance(latOld, longOld, loc.getLatitude(),loc.getLongitude()) /1000;
-                String kmOutput = Double.toString(km).replace(",", ".");
-                textViewDistance.setText(String.format("%.0f", kmOutput) + " km");
+                String kmOutput = String.format("%.2f", km).replace(",", ".");
+                textViewDistance.setText(kmOutput + " km");
             }
         }
 

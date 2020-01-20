@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.drawable.AnimatedImageDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,7 +28,7 @@ public class StartActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.show();
 
-        actionBar.setTitle("START");
+        actionBar.setTitle("LOGDRIVER");
         actionBar.setSubtitle("Press to start your ride");
 
         btnStart = findViewById(R.id.btn_stop);
@@ -42,6 +43,8 @@ public class StartActivity extends AppCompatActivity {
         final Bundle bundle = new Bundle();
         bundle.putString("USERNAME", username);
         bundle.putString("PASSWORD", password);
+
+        Log.i("Bundle", bundle.toString());
 
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override

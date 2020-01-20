@@ -1,5 +1,6 @@
 package com.example.distancetracker;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -40,6 +41,12 @@ public class ChooseCarActivity extends AppCompatActivity{
         setContentView(R.layout.activity_choose_car);
         picker = (NumberPicker) findViewById(R.id.picker);
         btnChoose = (Button) findViewById(R.id.btn_choose);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.show();
+
+        actionBar.setTitle("LOGDRIVER");
+        actionBar.setSubtitle("Choose your desired car");
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -123,7 +130,7 @@ public class ChooseCarActivity extends AppCompatActivity{
 
             carsArray = new String[cars.size()];
             for (int i=0; i<cars.size(); i++) {
-                carsArray[i] = cars.get(i).getName() + " " + cars.get(i).getModel()+ " " + cars.get(i).getCarNickname();
+                carsArray[i] = cars.get(i).getName() + " - " + cars.get(i).getCarNickname();
             }
 
             picker.setMinValue(0);

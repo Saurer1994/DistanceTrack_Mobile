@@ -1,5 +1,6 @@
 package com.example.distancetracker;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -24,6 +25,12 @@ public class CarSelectionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_selection);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.show();
+
+        actionBar.setTitle("LOGDRIVER");
+        actionBar.setSubtitle("Select car per QR code or manually ");
 
         selectCar = (Button) findViewById(R.id.btn_select_car);
         scanQr = (Button) findViewById(R.id.btn_scan_qr);

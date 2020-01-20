@@ -1,5 +1,6 @@
 package com.example.distancetracker;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -32,6 +33,13 @@ public class QRScannerActivity extends AppCompatActivity implements ZXingScanner
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrscanner);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.show();
+
+        actionBar.setTitle("LOGDRIVER");
+        actionBar.setSubtitle("Scan QR Code");
+
         mScannerView = new ZXingScannerView(this);
         setContentView(mScannerView);
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
@@ -49,8 +57,6 @@ public class QRScannerActivity extends AppCompatActivity implements ZXingScanner
 
             username = extras.getString("USERNAME");
             password = extras.getString("PASSWORD");
-
-            Toast.makeText(this, username + password, Toast.LENGTH_LONG).show();
         }
     }
 

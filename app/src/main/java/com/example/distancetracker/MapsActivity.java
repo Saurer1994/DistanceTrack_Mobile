@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,6 +61,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private String starAddress;
     private String endAddress;
     private String carId;
+    private float km;
     private JSONObject jsonObject;
     private  String username;
     private String password;
@@ -85,8 +87,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (extras != null) {
 
             //replace comma with a point
-            distance = extras.getStringArray("DATA")[0].replace(",", ".");
-            distanceView.setText(distance);
+            distance = extras.getStringArray("DATA")[0];
+
+            km = Float.valueOf(distance)/1000;
+            String convert = String.format("%.2f", km);
+            distanceView.setText(convert + " km");
 
             startlat = extras.getStringArray("DATA")[1];
             startLng = extras.getStringArray("DATA")[2];
@@ -122,8 +127,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 jsonObject.put("endLatitude", stopLat);
                 jsonObject.put("startLatitude", startlat);
 
-                String distanceWithoutMeter = distance.substring(0, distance.length() - 2);
-                jsonObject.put("distance", distanceWithoutMeter);
+
+                jsonObject.put("distance", convert.replace(",", "."));
 
                 Log.i("JSON", jsonObject.toString());
 
@@ -140,8 +145,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btncancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(startActivity);
                 startActivity.putExtras(bundle);
+                startActivity(startActivity);
                 finish();
             }
         });
@@ -161,8 +166,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     execute.execute();
                 } catch (Exception ex) {
                 }
-
-                Toast.makeText(MapsActivity.this, "Saved", Toast.LENGTH_LONG).show();
                 startActivity.putExtras(bundle);
                 startActivity(startActivity);
                 finish();
@@ -340,7 +343,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public class ExecuteNetworkOperations extends AsyncTask<Void, Void, String> {
 
         private ApiAuthenticationClient apiAuthenticationClient;
-        private String carsFromDb;
+        private String responseServer;
 
         public ExecuteNetworkOperations (ApiAuthenticationClient apiAuthenticationClient) {
             this.apiAuthenticationClient = apiAuthenticationClient;
@@ -349,14 +352,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         protected String doInBackground(Void... voids) {
             try {
-                carsFromDb = apiAuthenticationClient.execute();
-                String i ="";
+                responseServer = apiAuthenticationClient.execute();
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            return carsFromDb;
+            return responseServer;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            Toast.makeText(MapsActivity.this, "Saved", Toast.LENGTH_LONG).show();
         }
     }
 }
