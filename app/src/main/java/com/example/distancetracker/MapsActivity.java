@@ -91,7 +91,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             km = Float.valueOf(distance)/1000;
             String convert = String.format("%.2f", km);
-            distanceView.setText(convert + " km");
+            distanceView.setText(convert.replace(",", ".") + " km");
 
             startlat = extras.getStringArray("DATA")[1];
             startLng = extras.getStringArray("DATA")[2];

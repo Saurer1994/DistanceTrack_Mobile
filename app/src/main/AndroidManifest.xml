@@ -27,7 +27,12 @@
         android:theme="@style/AppTheme">
         <activity android:name=".ChooseCarActivity"></activity>
         <activity android:name=".CarSelectionActivity" />
-        <activity android:name=".UserLoginActivity" />
+        <activity android:name=".UserLoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".StopActivity" />
         <activity android:name=".StartActivity" />
 
@@ -53,13 +58,6 @@
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
         <activity android:name=".QRScannerActivity" />
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>
