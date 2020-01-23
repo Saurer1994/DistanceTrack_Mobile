@@ -82,8 +82,6 @@ public class StopActivity extends AppCompatActivity {
         actionBar.setTitle("LOGDRIVER");
         actionBar.setSubtitle("Press to stop your ride");
 
-        ActivityCompat.requestPermissions(StopActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
-
         final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
 
         if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
@@ -253,31 +251,6 @@ public class StopActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) { switch(item.getItemId()) {
-        case R.id.back:
-            Intent ChooseCar =  new Intent(StopActivity.this, CarSelectionActivity.class);
-            ChooseCar.putExtras(bundle);
-            startActivity(ChooseCar);
-            return(true);
-        case R.id.logout:
-            Intent loginActivity  = new Intent(StopActivity.this, UserLoginActivity.class);
-            startActivity(loginActivity);
-            finish();
-            return(true);
-        case R.id.exit:
-            finish();
-    }
-        return(super.onOptionsItemSelected(item));
-    }
-
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
@@ -295,5 +268,31 @@ public class StopActivity extends AppCompatActivity {
         final AlertDialog alert = builder.create();
         alert.show();
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) { switch(item.getItemId()) {
+        case R.id.back:
+            Intent ChooseCar =  new Intent(StopActivity.this, CarSelectionActivity.class);
+            ChooseCar.putExtras(bundle);
+            startActivity(ChooseCar);
+            return(true);
+        case R.id.logout:
+            Intent loginActivity  = new Intent(StopActivity.this, UserLoginActivity.class);
+            loginActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(loginActivity);
+            finish();
+            return(true);
+        case R.id.exit:
+            finish();
+    }
+        return(super.onOptionsItemSelected(item));
     }
 }

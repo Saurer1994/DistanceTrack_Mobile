@@ -13,6 +13,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.zxing.Result;
@@ -164,4 +166,35 @@ public class QRScannerActivity extends AppCompatActivity implements ZXingScanner
         startActivity(StopActivity);
         finish();
     }
+
+     @Override
+     public boolean onCreateOptionsMenu(Menu menu) {
+         // Inflate the menu; this adds items to the action bar if it is present.
+         getMenuInflater().inflate(R.menu.menu_main, menu);
+         return true;
+     }
+
+     @Override
+     public boolean onOptionsItemSelected(MenuItem item) {
+
+         switch(item.getItemId()) {
+
+             case R.id.back:
+                 Intent carselectionActivity  = new Intent(QRScannerActivity.this, CarSelectionActivity.class);
+                 startActivity(carselectionActivity);
+                 finish();
+                 return(true);
+             case R.id.logout:
+                 Intent loginActivity  = new Intent(QRScannerActivity.this, UserLoginActivity.class);
+                 loginActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                 startActivity(loginActivity);
+                 finish();
+                 return(true);
+             case R.id.exit:
+                 finish();
+                 return(true);
+         }
+         return(super.onOptionsItemSelected(item));
+     }
+
 }

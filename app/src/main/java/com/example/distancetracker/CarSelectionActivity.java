@@ -30,7 +30,7 @@ public class CarSelectionActivity extends AppCompatActivity {
         actionBar.show();
 
         actionBar.setTitle("LOGDRIVER");
-        actionBar.setSubtitle("Select car per QR code or manually ");
+        actionBar.setSubtitle("Select car per QR or manually");
 
         selectCar = (Button) findViewById(R.id.btn_select_car);
         scanQr = (Button) findViewById(R.id.btn_scan_qr);
@@ -79,9 +79,11 @@ public class CarSelectionActivity extends AppCompatActivity {
             Intent ChooseCar =  new Intent(CarSelectionActivity.this, StartActivity.class);
             ChooseCar.putExtras(bundle);
             startActivity(ChooseCar);
+            finish();
             return(true);
         case R.id.logout:
             Intent loginActivity  = new Intent(CarSelectionActivity.this, UserLoginActivity.class);
+            loginActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(loginActivity);
             finish();
             return(true);

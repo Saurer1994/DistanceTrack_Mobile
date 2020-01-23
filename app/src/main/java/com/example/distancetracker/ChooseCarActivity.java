@@ -157,6 +157,7 @@ public class ChooseCarActivity extends AppCompatActivity{
             startActivity(ChooseCar);
         case R.id.logout:
             Intent loginActivity  = new Intent(ChooseCarActivity.this, UserLoginActivity.class);
+            loginActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(loginActivity);
             finish();
             return(true);

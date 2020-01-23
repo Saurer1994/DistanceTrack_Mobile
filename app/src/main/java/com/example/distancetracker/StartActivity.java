@@ -2,7 +2,9 @@ package com.example.distancetracker;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.drawable.AnimatedImageDrawable;
 import android.graphics.drawable.Drawable;
@@ -24,6 +26,8 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+
+        ActivityCompat.requestPermissions(StartActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.show();
@@ -68,15 +72,15 @@ public class StartActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         Intent loginActivity  = new Intent(StartActivity.this, UserLoginActivity.class);
+        loginActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
         switch(item.getItemId()) {
 
         case R.id.back:
-            loginActivity  = new Intent(StartActivity.this, UserLoginActivity.class);
             startActivity(loginActivity);
             finish();
             return(true);
         case R.id.logout:
-            loginActivity  = new Intent(StartActivity.this, UserLoginActivity.class);
             startActivity(loginActivity);
             finish();
             return(true);
